@@ -1,0 +1,16 @@
+# COnfiguration to use redis key value pair
+image: docker.io/traefik:v2.2
+command: --api.insecure=true --providers.docker --providers.redis --providers.redis.endpoints=172.17.0.4:6379 --log --log.level=INFO --accessLog --entryPoints.web.address=:80
+volume:
+/var/run/docker.sock:/var/run/docker.sock
+/home/ubuntu/traefik/:/etc/traefik/
+
+
+1. Entry point - Default accept from all. Declared http and https in default config file
+2. Router 
+	- traefik/http/routers/whoami/rule	Host(`whoami.localhost.io`)
+	- traefik/http/routers/whoami/service	whoamiservice
+	- traefik/http/routers/whoami/entrypoints/0 web
+
+3. Service
+	- traefik/http/services/whoamiservice/loadbalancer/servers/0/url	http://172.17.0.5:8001/
